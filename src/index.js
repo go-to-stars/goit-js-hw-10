@@ -11,19 +11,18 @@ const refs = {
   infoCountry: document.querySelector('.country-info'),
 };
 
-refs.inputValue.addEventListener('input', () => {
-  const nameCountry = refs.inputValue.value.trim();
+refs.inputValue.addEventListener('input', debounce(entering, DEBOUNCE_DELAY)); // створення прослуховування події "input" поля вводу, виклик функції entering після припинення активності, через DEBOUNCE_DELAY
 
+function entering() {
+  const nameCountry = refs.inputValue.value.trim();
   if (nameCountry === '') {
     refs.listCountry.innerHTML = '';
     refs.infoCountry.innerHTML = '';
     return;
   } // якщо поле вводу пусте, очистити розмітку та вийти
-  debounce(
-    fetchCountries(nameCountry).then(onResolve).catch(onReject),
-    DEBOUNCE_DELAY
-  ); // виклик функції fetchCountries після припинення активності, через DEBOUNCE_DELAY
-}); // створення прослуховування події "input" поля вводу
+
+  fetchCountries(nameCountry).then(onResolve).catch(onReject);
+}
 
 function onResolve(countrys) {
   if (countrys.length > 10) {
